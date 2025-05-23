@@ -2,29 +2,30 @@
 set -e
 
 # -------- DIRECTORIES ---------
-datasetdir="datasets"
+dataset="/mnt/c/Users/Mostafa/OneDrive/Documents/Github/dmri/dataset"
 subjects=("subj_01")
 for subject in "${subjects[@]}"; do
 
 # -------- DATA LOADER ---------
-datadir="$datasetdir/$subject"
+datadir="$dataset/$subject"
 outdir="$datadir/preprocessed"
 mkdir -p "$outdir"
 
 # -------- CONFIGURATION --------
-dwi="$datadir/DTI-Mono_noPAT.nii"
+dwi="$datadir/DTI-Mono_noPAT.nii.gz"
 bval="$datadir/DTI-Mono_noPAT.bval"
 bvec="$datadir/DTI-Mono_noPAT.bvec"
 topup_ap="$datadir/ap_b0.nii.gz"
 topup_pa="$datadir/pa_b0.nii.gz"
-mag="$datadir/gre_field_mapping_2mm_e1.nii"
-phase="$datadir/gre_field_mapping_2mm_e2.nii"
-t1="$datadir/t1_mprage_tra.nii"
-atlas="atlases/BN_Atlas_246_2mm.nii"
+mag="$datadir/gre_field_mapping_2mm_e1.nii.gz"
+phase="$datadir/gre_field_mapping_2mm_e2.nii.gz"
+t1="$datadir/t1_mprage_tra.nii.gz"
+atlas="atlases/BN_Atlas_246_2mm.nii.gz"
 
 # -------- STEP 1: Copy DWI --------
 if [[ ! -f "$outdir/dwi.nii.gz" ]]; then
     echo "Copying DWI..."
+    cp "$dwi" "$outdir/dwi.nii.gz"
     fslcpgeom "$dwi" "$outdir/dwi.nii.gz"
     cp "$bval" "$outdir/bvals"
     cp "$bvec" "$outdir/bvecs"
