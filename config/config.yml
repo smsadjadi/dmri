@@ -1,11 +1,11 @@
 data:
-  dwi_file: "D:/Academic/Datasets/sample_dti/subj_01/DTI-Mono_noPAT/DTI-Mono_noPAT.nii.gz"
-  bval_file: "D:/Academic/Datasets/sample_dti/subj_01/DTI-Mono_noPAT/DTI-Mono_noPAT.bval"
-  bvec_file: "D:/Academic/Datasets/sample_dti/subj_01/DTI-Mono_noPAT/DTI-Mono_noPAT.bvec"
-  wm_mask_file: "D:/Academic/Datasets/sample_dti/subj_01/DTI-Mono_noPAT/DTI-Mono_noPAT_wm_mask.nii.gz"
-  fa_file: "D:/Academic/Datasets/sample_dti/subj_01/DTI-Mono_noPAT/DTI-Mono_noPAT_FA.nii.gz"
+  dwi_file:     "datset/subj_01/DTI-Mono_noPAT/DTI-Mono_noPAT.nii.gz"
+  bval_file:    "datset/subj_01/DTI-Mono_noPAT/DTI-Mono_noPAT.bval"
+  bvec_file:    "datset/subj_01/DTI-Mono_noPAT/DTI-Mono_noPAT.bvec"
+  wm_mask_file: "datset/subj_01/DTI-Mono_noPAT/DTI-Mono_noPAT_wm_mask.nii.gz"
+  fa_file:      "datset/subj_01/DTI-Mono_noPAT/DTI-Mono_noPAT_FA.nii.gz"
 
 atlas:
-  brainnetome: "atlas/brainnetome/BN_Atlas_246_2mm.nii.gz"
+  brainnetome: "atlases/brainnetome/BN_Atlas_246_2mm.nii.gz"
 
-output_dir: "D:/Academic/Datasets/sample_dti/output"
+output_dir: "datset/subj_01/analyzed"
