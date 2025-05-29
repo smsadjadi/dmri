@@ -1,6 +1,6 @@
 # basic  -------------------
-numpy
 python-math
+numpy
 pyyaml
 scipy
 pandas
