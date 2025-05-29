@@ -5,7 +5,7 @@ from tractography import deterministic_tractography, connectivity_from_streamlin
 
 def run(subject_dir, atlas_path):
     os.makedirs(subject_dir, exist_ok=True)
-    out_dir = os.path.join(subject_dir, "dipy_out")
+    out_dir = os.path.join(subject_dir, "analyzed_dipy")
     os.makedirs(out_dir, exist_ok=True)
 
     dwi = os.path.join(subject_dir, "DTI-Mono_noPAT.nii.gz")
