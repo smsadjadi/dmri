@@ -1,11 +1,6 @@
 #!/bin/bash
 set -e
 
-# -------- USER CONFIG --------
-: "${DO_TRACT:=1}"        # 1 = run tractography, 0 = skip completely
-: "${MATRIX_MODE:=1}"     # 1 = ROI×ROI, 2 = ROI×voxel, 3 = voxel×ROI
-: "${NSAMPLES:=1000}"     # fewer samples → much smaller .dot files
-
 # -------- DIRECTORIES --------
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 dataset="$script_dir/dataset"
@@ -266,49 +261,41 @@ fi
 
 # -------- Probabilistic Tractography & Connectivity --------
 echo "-------------------------------------"
-if [[ "$DO_TRACT" -eq 1 ]]; then
-  if [[ ! -f "$outdir/probtrackx/fdt_matrix${MATRIX_MODE}.dot" ]]; then
+if [[ ! -f "$outdir/probtrackx/fdt_matrix1.dot" ]]; then
     echo "Running bedpostx for diffusion modelling..."
     if [[ ! -d "$outdir.bedpostX" ]]; then
         ln -sf "$outdir/dwi_eddy.nii.gz"       "$outdir/data.nii.gz"
         ln -sf "$outdir/brain_mask.nii.gz"     "$outdir/nodif_brain_mask.nii.gz"
-        bedpostx "$outdir" || { echo "bedpostx failed"; exit 1; }
+        bedpostx "$outdir" || {
+            echo "bedpostx failed – skipping tractography."; exit 1; }
     fi
-    echo "Running probtrackx2 (matrix mode $MATRIX_MODE)…"
+    echo "Running probtrackx2 connectivity..."
     mkdir -p "$outdir/probtrackx"
-    case "$MATRIX_MODE" in
-        1) prob_opts="--os2t --omatrix1 --targetmasks=$roi_list" ;;
-        2) prob_opts="--omatrix2 --target2=$roi_list" ;;
-        3) prob_opts="--network --omatrix3 --target3=$roi_list" ;;
-        *) echo "Invalid MATRIX_MODE ($MATRIX_MODE)"; exit 1 ;;
-    esac
     probtrackx2 \
         --samples="$outdir.bedpostX/merged" \
         --mask="$outdir/nodif_brain_mask.nii.gz" \
         --seed="$roi_list" \
-        --loopcheck --forcedir \
-        --nsamples="$NSAMPLES" \
+        --targetmasks="$roi_list" \
+        --loopcheck --forcedir --opd \
         --dir="$outdir/probtrackx" \
-        $prob_opts \
-  else
-    echo "✔️  probtrackx output already exists – skipping"
-  fi
+        --omatrix3 # --omatrix2 --omatrix1
 else
-  echo "⚠️  DO_TRACT=0 → skipping bedpostx/probtrackx"
+echo "✔️ Probabilistic Tractography & Connectivity"
 fi
 
 # -------- Dot to CSV --------
 echo "-------------------------------------"
-if [[ "$DO_TRACT" -eq 1 && "$MATRIX_MODE" -eq 1 ]]; then
-    out_dot="$outdir/probtrackx/fdt_matrix1.dot"
-    if [[ ! -f "$outdir/connectivity_matrix.csv" && -f "$out_dot" ]]; then
-        echo "Converting ROI × ROI matrix to CSV..."
-        $pyenv "$script_dir/tractography/dot_to_matrix.py" \
-               "$out_dot" "$outdir/connectivity_matrix.csv"
-        echo "✔️ Connectivity matrix saved: $outdir/connectivity_matrix.csv"
-    else
-    echo "✔️ Dot to CSV"
+if [[ ! -f "$outdir/connectivity_matrix.csv" ]]; then
+    echo "Converting tractography output to CSV..."
+    if [[ ! -f "$outdir/fdt_matrix1.dot" ]]; then
+        cp  "$outdir/probtrackx/fdt_matrix1.dot" "$outdir/fdt_matrix1.dot"
     fi
+    $pyenv "$script_dir/tractography/dot_to_matrix.py" \
+        "$outdir/fdt_matrix1.dot" "$outdir/connectivity_matrix.csv"
+    rm "$outdir/fdt_matrix1.dot"
+    echo "Connectivity matrix saved: $outdir/connectivity_matrix.csv"
+else
+echo "✔️ Dot to CSV"
 fi
 
 # -------- Quality Control --------
