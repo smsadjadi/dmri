@@ -3,13 +3,15 @@ set -e
 
 # -------- USER CONFIG --------
 : "${DO_TRACT:=1}"        # 1 = run tractography, 0 = skip completely
-: "${MATRIX_MODE:=1}"     # 1 = ROI×ROI, 2 = ROI×voxel, 3 = voxel×ROI
+: "${MATRIX_MODE:=1}"     # 1 = ROI×ROI, 2 = ROI×voxel, 3 = voxel×ROI, 4 = voxel×voxel
 : "${NSAMPLES:=1000}"     # fewer samples → much smaller .dot files
+
 
 # -------- DIRECTORIES --------
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 dataset="$script_dir/dataset"
 pyenv="$HOME/pyenv/nienv/bin/python"
+
 
 # -------- CLEAN-UP PIDs --------
 for pid in $(pgrep -f "$(basename "$0")"); do
@@ -65,6 +67,7 @@ phase="$datadir/gre_field_mapping_2mm_e2.nii.gz"
 t1="$datadir/t1_mprage_tra.nii.gz"
 atlas="$script_dir/atlases/BN_Atlas_246_2mm.nii.gz"
 roi_list="$outdir/roi_list.txt"
+seed_mask="$outdir/seed_mask.nii.gz"
 
 # -------- Copy DWI --------
 echo "-------------------------------------"
@@ -78,7 +81,7 @@ else
 echo "✔️ Copy DWI"
 fi
 
-# -------- Fieldmap preparation --------
+# -------- Fieldmap Preparation --------
 echo "-------------------------------------"
 if [[ ! -f "$outdir/fieldmap_rads.nii.gz" ]]; then
     echo "Preparing fieldmap from GRE..."
@@ -88,19 +91,20 @@ if [[ ! -f "$outdir/fieldmap_rads.nii.gz" ]]; then
         touch "$outdir/fieldmap_failed"
     }
 else
-echo "✔️ Fieldmap preparation"
+echo "✔️ Fieldmap Preparation"
 fi
 
-# ---------- B0 creation ----------
+# ---------- B0 Creation ----------
 echo "-------------------------------------"
 if [[ ! -f "$outdir/b0" ]]; then
+    echo "Creating B0..."
     fslroi "$outdir/dwi.nii.gz" "$outdir/b0" 0 1
-    bet "$outdir/b0" "$outdir/b0_brain" -f 0.3 -m
+    bet     "$outdir/b0" "$outdir/b0_brain" -f 0.3 -m
 else
-echo "✔️ B0 creation"
+echo "✔️ B0 Creation"
 fi
 
-# -------- Fieldmap alignment to DWI --------
+# -------- Fieldmap Alignment to DWI --------
 echo "-------------------------------------"
 if [[ -f "$outdir/fieldmap_rads.nii.gz" ]]; then
     dwi_dim=$(fslhd "$outdir/dwi.nii.gz" | awk '/^dim1/ {d1=$2} /^dim2/ {d2=$2} /^dim3/ {d3=$2} END{print d1"x"d2"x"d3}')
@@ -115,10 +119,10 @@ if [[ -f "$outdir/fieldmap_rads.nii.gz" ]]; then
     fi
 else
 fieldmap=""
-echo "✔️ Fieldmap alignment to DWI"
+echo "✔️ Fieldmap Alignment to DWI"
 fi
 
-# -------- EPI distortion correction --------
+# -------- EPI Distortion Correction --------
 echo "-------------------------------------"
 if [[ ! -f "$outdir/dwi_unwarped.nii.gz" ]]; then
     echo "Applying EPI distortion correction with fugue..."
@@ -136,10 +140,10 @@ if [[ ! -f "$outdir/dwi_unwarped.nii.gz" ]]; then
         cp "$outdir/dwi.nii.gz" "$outdir/dwi_unwarped.nii.gz"
     fi
 else
-echo "✔️ EPI distortion correction"
+echo "✔️ EPI Distortion Correction"
 fi
 
-# -------- Eddy correction --------
+# -------- Eddy Correction --------
 echo "-------------------------------------"
 if [[ -f "$topup_ap" && -f "$topup_pa" && ! -f "$outdir/dwi_eddy.nii.gz" ]]; then
     echo "Eddy and motion correction..."
@@ -167,13 +171,12 @@ if [[ -f "$topup_ap" && -f "$topup_pa" && ! -f "$outdir/dwi_eddy.nii.gz" ]]; the
                 --topup=$outdir/topup_results \
                 --out=$outdir/dwi_eddy
 elif [[ ! -f "$outdir/dwi_eddy.nii.gz" ]]; then
-    echo "-------------------------------------"
     echo "Running eddy correction..."
     fslroi "$outdir/dwi_unwarped.nii.gz" "$outdir/nodif" 0 1
     bet "$outdir/nodif" "$outdir/nodif_brain" -f 0.3 -m
     eddy_correct "$outdir/dwi_unwarped.nii.gz" "$outdir/dwi_eddy.nii.gz" 0
 else
-echo "✔️ Eddy correction"
+echo "✔️ Eddy Correction"
 fi
 
 # -------- Eddy Quality Control --------
@@ -197,7 +200,7 @@ else
 echo "✔️ Eddy Quality Control"
 fi
 
-# -------- Brain mask --------
+# -------- Brain Mask --------
 echo "-------------------------------------"
 if [[ ! -f "$outdir/brain_mask.nii.gz" ]]; then
     echo "Creating brain mask..."
@@ -206,10 +209,10 @@ if [[ ! -f "$outdir/brain_mask.nii.gz" ]]; then
     bet "$outdir/nodif_posteddy" "$outdir/nodif_brain_posteddy" -f 0.3 -m
     cp "$outdir/nodif_brain_posteddy_mask.nii.gz" "$outdir/brain_mask.nii.gz"
 else
-echo "✔️ Brain mask"
+echo "✔️ Brain Mask"
 fi
 
-# -------- Fit tensor --------
+# -------- Tensor Fit --------
 echo "-------------------------------------"
 if [[ ! -f "$outdir/dti_FA.nii.gz" ]]; then
     echo "Fitting DTI model..."
@@ -219,7 +222,7 @@ if [[ ! -f "$outdir/dti_FA.nii.gz" ]]; then
            -r "$outdir/bvecs" \
            -b "$outdir/bvals"
 else
-echo "✔️ Tensor fit"
+echo "✔️ Tensor Fit"
 fi
 
 # -------- T1 to DWI Register --------
@@ -243,7 +246,7 @@ else
 echo "✔️ Atlas to DWI Register"
 fi
 
-# -------- Binary ROI masks & list --------
+# -------- Binary ROI Masks & List --------
 echo "-------------------------------------"
 if [[ ! -f "$roi_list" ]]; then
     echo "Creating binary ROI masks from atlas..."
@@ -261,7 +264,20 @@ if [[ ! -f "$roi_list" ]]; then
         fi
     done
 else
-echo "✔️ Binary ROI masks & list"
+echo "✔️ Binary ROI Masks & List"
+fi
+
+# -------- Seed Mask Creation --------
+echo "-------------------------------------"
+if [[ ! -f "$seed_mask" ]]; then
+    echo "Creating combined seed mask from all ROIs..."
+    fslmaths "$(head -n 1 "$roi_list")" -mul 0 "$seed_mask"  # init empty image
+    while IFS= read -r roi; do
+        fslmaths "$seed_mask" -add "$roi" "$seed_mask"
+    done < "$roi_list"
+    fslmaths "$seed_mask" -bin "$seed_mask"
+else
+    echo "✔️ Seed Mask Creation"
 fi
 
 # -------- Probabilistic Tractography & Connectivity --------
@@ -277,24 +293,24 @@ if [[ "$DO_TRACT" -eq 1 ]]; then
     echo "Running probtrackx2 (matrix mode $MATRIX_MODE)…"
     mkdir -p "$outdir/probtrackx"
     case "$MATRIX_MODE" in
-        1) prob_opts="--os2t --omatrix1 --targetmasks=$roi_list" ;;
-        2) prob_opts="--omatrix2 --target2=$roi_list" ;;
-        3) prob_opts="--network --omatrix3 --target3=$roi_list" ;;
-        *) echo "Invalid MATRIX_MODE ($MATRIX_MODE)"; exit 1 ;;
+        1) prob_opts="--network --seed=$roi_list --targetmasks=$roi_list" ;;  # ROI-to-ROI matrix
+        2) prob_opts="--omatrix2 --seed=$roi_list" ;; # ROI seed to voxel targets
+        3) prob_opts="--os2t --omatrix1 --seed=$seed_mask --targetmasks=$roi_list" ;; # Voxel seeds to ROI targets
+        4) prob_opts="--omatrix3 --seed=$seed_mask" ;; # Full voxel-to-voxel matrix
+        *) echo "❌ Invalid MATRIX_MODE ($MATRIX_MODE)"; exit 1 ;;
     esac
     probtrackx2 \
         --samples="$outdir.bedpostX/merged" \
         --mask="$outdir/nodif_brain_mask.nii.gz" \
-        --seed="$roi_list" \
         --loopcheck --forcedir \
         --nsamples="$NSAMPLES" \
-        --dir="$outdir/probtrackx" \
         $prob_opts \
+        --dir="$outdir/probtrackx"
   else
-    echo "✔️  probtrackx output already exists – skipping"
+    echo "✔️ Probabilistic Tractography & Connectivity"
   fi
 else
-  echo "⚠️  DO_TRACT=0 → skipping bedpostx/probtrackx"
+  echo "⚠️ DO_TRACT=0 → Skipping edpostx/probtrackx"
 fi
 
 # -------- Dot to CSV --------
