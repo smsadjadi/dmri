@@ -1,17 +1,15 @@
 #!/bin/bash
-set -e
+# set -e
 
 # -------- USER CONFIG --------
 : "${DO_TRACT:=1}"        # 1 = run tractography, 0 = skip completely
 : "${MATRIX_MODE:=1}"     # 1 = ROI×ROI, 2 = ROI×voxel, 3 = voxel×ROI, 4 = voxel×voxel
-: "${NSAMPLES:=1000}"     # fewer samples → much smaller .dot files
-
+: "${NSAMPLES:=5000}"     # fewer samples → much smaller .dot files
 
 # -------- DIRECTORIES --------
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 dataset="$script_dir/dataset"
 pyenv="$HOME/pyenv/nienv/bin/python"
-
 
 # -------- CLEAN-UP PIDs --------
 for pid in $(pgrep -f "$(basename "$0")"); do
@@ -34,14 +32,6 @@ if [[ "$LIMITED" != "1" ]]; then
     CPU_LIMIT=$((CORES * 50))
     LIMITED=1 exec cpulimit -l $CPU_LIMIT -- "$0" "$@" >> $dataset/fsl.log 2>&1
 fi
-
-# -------- HEARTBEAT --------
-(
-  while true; do
-    sleep 300
-    echo "♡ heart beating at $(date '+%Y-%m-%d %H:%M:%S')"
-  done
-) &
 
 # -------- DATASET --------
 subjects=("subj_01")
@@ -315,16 +305,14 @@ fi
 
 # -------- Dot to CSV --------
 echo "-------------------------------------"
-if [[ "$DO_TRACT" -eq 1 && "$MATRIX_MODE" -eq 1 ]]; then
-    out_dot="$outdir/probtrackx/fdt_matrix1.dot"
-    if [[ ! -f "$outdir/connectivity_matrix.csv" && -f "$out_dot" ]]; then
-        echo "Converting ROI × ROI matrix to CSV..."
-        $pyenv "$script_dir/tractography/dot_to_matrix.py" \
-               "$out_dot" "$outdir/connectivity_matrix.csv"
-        echo "✔️ Connectivity matrix saved: $outdir/connectivity_matrix.csv"
-    else
-    echo "✔️ Dot to CSV"
-    fi
+out_dot="$outdir/probtrackx/fdt_matrix.dot"
+if [[ ! -f "$outdir/connectivity_matrix.csv" && -f "$out_dot" ]]; then
+    echo "Converting Dot matrix to CSV..."
+    $pyenv "$script_dir/tractography/dot_to_matrix.py" \
+            "$out_dot" "$outdir/connectivity_matrix.csv"
+    echo "✔️ Connectivity matrix saved: $outdir/connectivity_matrix.csv"
+else
+echo "✔️ Dot to CSV"
 fi
 
 # -------- Quality Control --------
