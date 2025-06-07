@@ -104,21 +104,12 @@ def connectivity(dwi_file, mask_file, atlas_file, bval_file, bvec_file, output_d
     direction_getter = CustomTensorDirectionGetter(principal_directions, mask)
 
     # Perform deterministic tractography
-    streamlines_generator = LocalTracking(
-        direction_getter, stopping_criterion, seeds, affine, step_size=0.5
-    )
+    streamlines_generator = LocalTracking(direction_getter, stopping_criterion, seeds, affine, step_size=0.5)
     streamlines = Streamlines(streamlines_generator)
 
     # Compute adjacency matrix
     print("Computing adjacency matrix...")
-    connectivity = connectivity_matrix(
-        streamlines,
-        affine,
-        atlas,
-        return_mapping=False,
-        mapping_as_streamlines=False,
-        symmetric=True,
-    )
+    connectivity = connectivity_matrix( streamlines, affine, atlas, return_mapping=False, mapping_as_streamlines=False, symmetric=True)
     region_labels = np.unique(atlas)
 
     # Save adjacency matrix
@@ -133,14 +124,7 @@ def connectivity_from_streamlines(streamlines, atlas_file, affine, output_dir):
     """Compute an adjacency matrix from precomputed streamlines."""
     os.makedirs(output_dir, exist_ok=True)
     atlas, _ = load_nifti(atlas_file)
-    connectivity = connectivity_matrix(
-        streamlines,
-        affine,
-        atlas,
-        return_mapping=False,
-        mapping_as_streamlines=False,
-        symmetric=True,
-    )
+    connectivity = connectivity_matrix( streamlines, affine, atlas, return_mapping=False, mapping_as_streamlines=False, symmetric=True)
     region_labels = np.unique(atlas)
     connectivity_file = os.path.join(output_dir, "connectivity.npy")
     np.save(connectivity_file, connectivity)

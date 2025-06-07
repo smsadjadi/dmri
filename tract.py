@@ -2,15 +2,7 @@ import os
 import numpy as np
 from dipy.io.image import load_nifti, save_nifti
 from dipy.core.gradients import gradient_table
-
-from preprocess import (
-    denoise,
-    remove_gibbs,
-    motion_correction,
-    brain_mask,
-    registration,
-    tensor_fit,
-)
+from preprocess import denoise, remove_gibbs, motion_correction, brain_mask, registration, tensor_fit
 from tractography import deterministic_tractography, connectivity_from_streamlines
 
 
@@ -54,9 +46,7 @@ def run(subject_dir, atlas_path):
     )
 
     print("Deterministic tractography ...")
-    streamlines, trk_affine, _ = deterministic_tractography(
-        preproc_path, mask_path, bval_file, bvec_file, out_dir
-    )
+    streamlines, trk_affine, _ = deterministic_tractography(preproc_path, mask_path, bval_file, bvec_file, out_dir)
     print("Computing connectivity matrix ...")
     connectivity_from_streamlines(streamlines, atlas_in_dwi, trk_affine, out_dir)
 
