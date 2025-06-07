@@ -1,4 +1,5 @@
 import os
+import sys
 import numpy as np
 
 from dipy.io.image import load_nifti
@@ -10,7 +11,19 @@ from dipy.tracking.stopping_criterion import BinaryStoppingCriterion
 from dipy.tracking.utils import seeds_from_mask
 from dipy.io.streamline import save_trk
 
-from .connectivity import CustomTensorDirectionGetter, connectivity_from_streamlines
+# Resolve relative imports when executed outside a package
+if __package__ is None or __package__ == "":
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    sys.path.insert(0, current_dir)
+    from connectivity import (
+        CustomTensorDirectionGetter,
+        connectivity_from_streamlines,
+    )
+else:
+    from .connectivity import (
+        CustomTensorDirectionGetter,
+        connectivity_from_streamlines,
+    )
 
 
 def deterministic_tractography(
