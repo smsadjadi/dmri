@@ -34,11 +34,12 @@ if [[ "$LIMITED" != "1" ]]; then
 fi
 
 # -------- DATASET --------
-subjects=("subj_01")
+subjects=("subj_01" "subj_02" "subj_03" "subj_04" "subj_05" "subj_06" "subj_07" "subj_08" "subj_09" "subj_10")
 if [ ${#subjects[@]} -eq 0 ]; then
     mapfile -t subjects < <(ls -1 "$dataset")
 fi
 for subject in "${subjects[@]}"; do
+echo "👨🏻‍💻 <<< ${subject}"
 
 # -------- DATA LOADER --------
 datadir="$dataset/$subject"
@@ -272,8 +273,10 @@ fi
 
 # -------- Probabilistic Tractography & Connectivity --------
 echo "-------------------------------------"
+if [[ "$MATRIX_MODE" -eq 1 ]]; then out_mat="$outdir/probtrackx/fdt_network_matrix"
+else out_mat="$outdir/probtrackx/fdt_matrix${MATRIX_MODE}.dot"; fi
 if [[ "$DO_TRACT" -eq 1 ]]; then
-  if [[ ! -f "$outdir/probtrackx/fdt_matrix${MATRIX_MODE}.dot" ]]; then
+  if [[ ! -f "$out_mat" ]]; then
     echo "Running bedpostx for diffusion modelling..."
     if [[ ! -d "$outdir.bedpostX" ]]; then
         ln -sf "$outdir/dwi_eddy.nii.gz"       "$outdir/data.nii.gz"
@@ -305,11 +308,10 @@ fi
 
 # -------- Dot to CSV --------
 echo "-------------------------------------"
-out_dot="$outdir/probtrackx/fdt_matrix.dot"
-if [[ ! -f "$outdir/connectivity_matrix.csv" && -f "$out_dot" ]]; then
+if [[ ! -f "$outdir/connectivity_matrix.csv" && -f "$out_mat" && "$out_mat" == *.dot ]]; then
     echo "Converting Dot matrix to CSV..."
     $pyenv "$script_dir/tractography/dot_to_matrix.py" \
-            "$out_dot" "$outdir/connectivity_matrix.csv"
+            "$out_mat" "$outdir/connectivity_matrix.csv"
     echo "✔️ Connectivity matrix saved: $outdir/connectivity_matrix.csv"
 else
 echo "✔️ Dot to CSV"
