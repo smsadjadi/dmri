@@ -6,7 +6,7 @@ if not mats:
     sys.exit("No per-seed matrices found – nothing to merge.")
 
 all_mats = [np.loadtxt(f) for f in mats]
-conn2d   = np.sum(all_mats, axis=0)          # collapse across seeds
+conn2d   = np.sum(all_mats, axis=0)
 
 with open(out_csv, "w", newline="") as f:
     csv.writer(f).writerows(conn2d)

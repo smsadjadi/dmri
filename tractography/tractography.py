@@ -15,26 +15,12 @@ from dipy.io.streamline import save_trk
 if __package__ is None or __package__ == "":
     current_dir = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, current_dir)
-    from connectivity import (
-        CustomTensorDirectionGetter,
-        connectivity_from_streamlines,
-    )
+    from connectivity import CustomTensorDirectionGetter, connectivity_from_streamlines
 else:
-    from .connectivity import (
-        CustomTensorDirectionGetter,
-        connectivity_from_streamlines,
-    )
+    from .connectivity import CustomTensorDirectionGetter, connectivity_from_streamlines
 
 
-def deterministic_tractography(
-    dwi_file,
-    mask_file,
-    bval_file,
-    bvec_file,
-    out_dir,
-    step_size=0.5,
-    fa_threshold=0.2,
-):
+def deterministic_tractography( dwi_file, mask_file, bval_file, bvec_file, out_dir, step_size=0.5, fa_threshold=0.2):
 
     os.makedirs(out_dir, exist_ok=True)
 
@@ -58,13 +44,7 @@ def deterministic_tractography(
     principal_dirs = np.ascontiguousarray(principal_dirs)
     direction_getter = CustomTensorDirectionGetter(principal_dirs, mask)
 
-    streamlines_generator = LocalTracking(
-        direction_getter,
-        stopping_criterion,
-        seeds,
-        affine,
-        step_size=step_size,
-    )
+    streamlines_generator = LocalTracking( direction_getter, stopping_criterion, seeds, affine, step_size=step_size)
     streamlines = Streamlines(streamlines_generator)
 
     tract_file = os.path.join(out_dir, "streamlines.trk")
@@ -74,25 +54,7 @@ def deterministic_tractography(
     return streamlines, affine, tract_file
 
 
-def tractography_connectivity(
-    dwi_file,
-    mask_file,
-    atlas_file,
-    bval_file,
-    bvec_file,
-    out_dir,
-    step_size=0.5,
-    fa_threshold=0.2,
-):
-
-    streamlines, affine, _ = deterministic_tractography(
-        dwi_file,
-        mask_file,
-        bval_file,
-        bvec_file,
-        out_dir,
-        step_size=step_size,
-        fa_threshold=fa_threshold,
-    )
+def tractography_connectivity( dwi_file, mask_file, atlas_file, bval_file, bvec_file, out_dir, step_size=0.5, fa_threshold=0.2):
+    
+    streamlines, affine, _ = deterministic_tractography( dwi_file, mask_file, bval_file, bvec_file, out_dir, step_size=step_size, fa_threshold=fa_threshold)
     return connectivity_from_streamlines(streamlines, atlas_file, affine, out_dir)
-
