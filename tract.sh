@@ -2,9 +2,10 @@
 # set -e
 
 # -------- USER CONFIG --------
-: "${DO_TRACT:=1}"        # 1 = run tractography, 0 = skip completely
-: "${MATRIX_MODE:=1}"     # 1 = ROI×ROI, 2 = ROI×voxel, 3 = voxel×ROI, 4 = voxel×voxel
-: "${NSAMPLES:=5000}"     # fewer samples → much smaller .dot files
+: "${SKIP_SUBJ_ON_EDDY_FAIL:=0}"  # 0 = keep going with unwarped DWI, 1 = skip subject
+: "${DO_TRACT:=1}"                # 1 = run tractography, 0 = skip completely
+: "${MATRIX_MODE:=1}"             # 1 = ROI×ROI, 2 = ROI×voxel, 3 = voxel×ROI, 4 = voxel×voxel
+: "${NSAMPLES:=5000}"             # fewer samples → much smaller .dot files
 
 # -------- DIRECTORIES --------
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -136,31 +137,71 @@ fi
 
 # -------- Eddy Correction --------
 echo "-------------------------------------"
+eddy_failed=0
 if [[ -f "$topup_ap" && -f "$topup_pa" && ! -f "$outdir/dwi_eddy.nii.gz" ]]; then
     echo "Eddy and motion correction..."
     mkdir -p $outdir/eddy
+    # Ensure identical orientation
+    for img in "$topup_ap" "$topup_pa"; do
+        fslreorient2std "$img" "${img%.nii.gz}_ro.nii.gz"
+    done
+    topup_ap_ro=${topup_ap%.nii.gz}_ro.nii.gz
+    topup_pa_ro=${topup_pa%.nii.gz}_ro.nii.gz
     # Prepare topup (only if needed)
     if [ ! -f "$outdir/topup_fieldmap.nii.gz" ]; then
-        fslmerge -t $outdir/topup_b0s $topup_ap $topup_pa
-        echo "0 -1 0 0.05" > $outdir/acqparams.txt
-        echo "0 1 0 0.05" >> $outdir/acqparams.txt
+        fslmerge -t $outdir/topup_b0s "$topup_ap_ro" "$topup_pa_ro"
+        # Acqparams lines = n vols
+        dwell=$(jq -r '."TotalReadoutTime" // empty' "$dwi_json")
+        if [[ -z "$dwell" || "$dwell" == "null" ]]; then
+            es=$(jq -r '."EffectiveEchoSpacing"' "$dwi_json")
+            pe_dir=$(jq -r '."PhaseEncodingDirection"' "$dwi_json")
+            if [[ "$pe_dir" =~ ^i ]]; then
+                pe_dim=$(fslhd "$outdir/dwi.nii.gz" | awk '/^dim1/{print $2}')
+            else
+                pe_dim=$(fslhd "$outdir/dwi.nii.gz" | awk '/^dim2/{print $2}')
+            fi
+            dwell=$(awk -v es="$es" -v pd="$pe_dim" 'BEGIN{printf "%.8f", es*(pd-1)}')
+        fi
+        nvols_topup=$(fslnvols $outdir/topup_b0s)
+        : > $outdir/acqparams.txt
+        for ((v=1; v<=nvols_topup; v++)); do
+            if (( v <= nvols_topup/2 )); then
+                echo "0 -1 0 $dwell" >> $outdir/acqparams.txt   # AP
+            else
+                echo "0  1 0 $dwell" >> $outdir/acqparams.txt   # PA
+            fi
+        done
         topup --imain=$outdir/topup_b0s --datain=$outdir/acqparams.txt \
               --config=b02b0.cnf --out=$outdir/topup_results \
               --iout=$outdir/topup_corrected_b0 --fout=$outdir/topup_fieldmap
     fi
     # Prepare index and mask
-    nvols=$(fslnvols $dwi)
+    nvols=$(fslnvols "$outdir/dwi.nii.gz")
     indx=""
     for ((i=1; i<=${nvols}; i+=1)); do indx="$indx 1"; done
     echo $indx > $outdir/index.txt
-    bet $topup_ap $outdir/nodif_brain -m -f 0.2
-    eddy_openmp --imain=${dwl} \
-                --mask=$outdir/nodif_brain_mask \
-                --acqp=$outdir/acqparams.txt \
-                --index=$outdir/index.txt \
-                --bvecs=${bvec} --bvals=${bval} \
-                --topup=$outdir/topup_results \
-                --out=$outdir/dwi_eddy
+    fslroi "$outdir/dwi.nii.gz" "$outdir/nodif" 0 1
+    bet "$outdir/nodif" $outdir/nodif_brain -m -f 0.2
+    # Fix var name & binary
+    eddy diffusion \
+         --imain=$outdir/dwi.nii.gz \
+         --mask=$outdir/nodif_brain_mask.nii.gz \
+         --acqp=$outdir/acqparams.txt \
+         --index=$outdir/index.txt \
+         --bvecs=$outdir/bvecs --bvals=$outdir/bvals \
+         --topup=$outdir/topup_results \
+         --out=$outdir/dwi_eddy
+    if [[ $? -ne 0 || ! -f "$outdir/dwi_eddy.nii.gz" ]]; then
+        echo "⚠️  Eddy failed for $subject."
+        if [[ "${SKIP_SUBJ_ON_EDDY_FAIL}" == "1" ]]; then
+            echo "Skipping subject $subject and continuing with next."
+            continue
+        else
+            echo "Continuing with unwarped DWI instead."
+            cp "$outdir/dwi_unwarped.nii.gz" "$outdir/dwi_eddy.nii.gz"
+            eddy_failed=1
+        fi
+    fi
 elif [[ ! -f "$outdir/dwi_eddy.nii.gz" ]]; then
     echo "Running eddy correction..."
     fslroi "$outdir/dwi_unwarped.nii.gz" "$outdir/nodif" 0 1
@@ -172,14 +213,13 @@ fi
 
 # -------- Eddy Quality Control --------
 echo "-------------------------------------"
-if [ ! -d "$outdir/eddy_qc" ]; then
+if [[ $eddy_failed -eq 0 && ! -d "$outdir/eddy_qc" ]]; then
     if [[ -f "$outdir/index.txt" && -f "$outdir/acqparams.txt" ]]; then
         echo "Eddy quality control..."
-        mkdir -p "$outdir/eddy_qc"
         eddy_quad "$outdir/dwi_eddy" \
             -idx "$outdir/index.txt" \
             -par "$outdir/acqparams.txt" \
-            -m "$outdir/nodif_brain_mask" \
+            -m "$outdir/nodif_brain_mask.nii.gz" \
             -b "$bval" \
             -g "$bvec" \
             -o "$outdir/eddy_qc"
@@ -278,10 +318,16 @@ else out_mat="$outdir/probtrackx/fdt_matrix${MATRIX_MODE}.dot"; fi
 if [[ "$DO_TRACT" -eq 1 ]]; then
   if [[ ! -f "$out_mat" ]]; then
     echo "Running bedpostx for diffusion modelling..."
-    if [[ ! -d "$outdir.bedpostX" ]]; then
-        ln -sf "$outdir/dwi_eddy.nii.gz"       "$outdir/data.nii.gz"
-        ln -sf "$outdir/brain_mask.nii.gz"     "$outdir/nodif_brain_mask.nii.gz"
+    samples_ok="$outdir.bedpostX/merged_th1samples.nii.gz"
+    if [[ ! -f "$samples_ok" ]]; then
+        rm -rf "$outdir.bedpostX"
+        ln -sf "$outdir/dwi_eddy.nii.gz"   "$outdir/data.nii.gz"
+        ln -sf "$outdir/brain_mask.nii.gz" "$outdir/nodif_brain_mask.nii.gz"
+        mkdir -p "$outdir.bedpostX/logs"
         bedpostx "$outdir" || { echo "bedpostx failed"; exit 1; }
+        sleep 60
+    else
+        echo "BedpostX samples already present – skipping"
     fi
     echo "Running probtrackx2 (matrix mode $MATRIX_MODE)…"
     mkdir -p "$outdir/probtrackx"
@@ -333,4 +379,4 @@ echo "========================================="
 done
 
 # -------- Kill PID --------
-kill -9 "$$" 2>/dev/null
+trap '"$script_dir/utils/kill_fsl.sh"' EXIT
