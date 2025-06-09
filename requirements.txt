@@ -10,5 +10,6 @@ tqdm
 # ni -----------------------
 nibabel
 nilearn
+nipype
 dipy
 mne

@@ -9,7 +9,8 @@
 
 # -------- DIRECTORIES --------
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-dataset="$script_dir/dataset"
+parent_dir="$(dirname "$script_dir")"
+dataset="$parent_dir/dataset"
 pyenv="$HOME/pyenv/nienv/bin/python"
 
 # -------- CLEAN-UP PIDs --------
@@ -23,11 +24,18 @@ done
 # -------- EXECUSION --------
 if [[ "$LIMITED" != "1" ]]; then
     {
-      echo
-      echo "========================================="
-      echo "New FSL run started @ $(date '+%Y-%m-%d %H:%M:%S')"
-      echo "========================================="
-      echo "launching under 50% cpulimit..."
+        echo
+        echo "========================================="
+        echo "New FSL run started @ $(date '+%Y-%m-%d %H:%M:%S')"
+        echo "========================================="
+        echo "launching under 50% cpulimit..."
+        echo "-----------------------------------------"
+        echo "Configuration:"
+        echo "- SKIP_SUBJ_ON_EDDY_FAIL = $SKIP_SUBJ_ON_EDDY_FAIL"
+        echo "- DO_TRACT               = $DO_TRACT"
+        echo "- MATRIX_MODE            = $MATRIX_MODE"
+        echo "- NSAMPLES               = $NSAMPLES"
+        echo "-----------------------------------------"
     } >> $dataset/fsl.log 2>&1
     CORES=$(nproc)
     CPU_LIMIT=$((CORES * 50))
@@ -57,7 +65,7 @@ topup_pa="$datadir/pa_b0.nii.gz"
 mag="$datadir/gre_field_mapping_2mm_e1.nii.gz"
 phase="$datadir/gre_field_mapping_2mm_e2.nii.gz"
 t1="$datadir/t1_mprage_tra.nii.gz"
-atlas="$script_dir/atlases/BN_Atlas_246_2mm.nii.gz"
+atlas="$dataset/atlases/BN_Atlas_246_2mm.nii.gz"
 roi_list="$outdir/roi_list.txt"
 seed_mask="$outdir/seed_mask.nii.gz"
 
@@ -356,7 +364,7 @@ fi
 echo "-------------------------------------"
 if [[ ! -f "$outdir/connectivity_matrix.csv" && -f "$out_mat" && "$out_mat" == *.dot ]]; then
     echo "Converting Dot matrix to CSV..."
-    $pyenv "$script_dir/tractography/dot_to_matrix.py" \
+    $pyenv "$parent_dir/dipy/tractography/dot_to_matrix.py" \
             "$out_mat" "$outdir/connectivity_matrix.csv"
     echo "✔️ Connectivity matrix saved: $outdir/connectivity_matrix.csv"
 else
@@ -379,4 +387,4 @@ echo "========================================="
 done
 
 # -------- Kill PID --------
-trap '"$script_dir/utils/kill_fsl.sh"' EXIT
+trap '"$script_dir/kill.sh"' EXIT

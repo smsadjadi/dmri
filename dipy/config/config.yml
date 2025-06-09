@@ -1,0 +1,11 @@
+data:
+  dwi_file: "../datset/subj_01/DTI-Mono_noPAT.nii.gz"
+  bval_file: "../datset/subj_01/DTI-Mono_noPAT.bval"
+  bvec_file: "../datset/subj_01/DTI-Mono_noPAT.bvec"
+  wm_mask_file: "../datset/subj_01/DTI-Mono_noPAT_wm_mask.nii.gz"
+  fa_file: "../datset/subj_01/DTI-Mono_noPAT_FA.nii.gz"
+
+atlas:
+  brainnetome: "../dataset/atlases/BN_Atlas_246_2mm.nii.gz"
+
+output_dir: "../datset/subj_01/analyzed_dipy"
