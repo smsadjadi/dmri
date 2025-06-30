@@ -39,7 +39,8 @@ if [[ "$LIMITED" != "1" ]]; then
     } >> $dataset/fsl.log 2>&1
     CORES=$(nproc)
     CPU_LIMIT=$((CORES * 50))
-    LIMITED=1 exec cpulimit -l $CPU_LIMIT -- "$0" "$@" >> $dataset/fsl.log 2>&1
+    # LIMITED=1 exec cpulimit -l $CPU_LIMIT -- "$0" "$@" >> $dataset/fsl.log 2>&1
+    LIMITED=1 exec "$0" "$@" >> $dataset/fsl.log 2>&1
 fi
 
 # -------- DATASET --------
