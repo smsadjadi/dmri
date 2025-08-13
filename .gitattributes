@@ -13,4 +13,6 @@ data/** filter=lfs diff=lfs merge=lfs -text
 *.ipynb filter=lfs diff=lfs merge=lfs -text
 /dataset/conn/fdt_network_matrix_1 filter=lfs diff=lfs merge=lfs -text
 /dataset/conn/fdt_network_matrix_2 filter=lfs diff=lfs merge=lfs -text
+/data/conn/fdt_network_matrix_1 filter=lfs diff=lfs merge=lfs -text
+/data/conn/fdt_network_matrix_2 filter=lfs diff=lfs merge=lfs -text
 *.py !text !filter !merge !diff
