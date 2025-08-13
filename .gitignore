@@ -1,3 +1,4 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a9cf5cbd0df3f383e2800b2a3161616d0675689a2084f417b4cb633243bf5601
-size 34
+__pychache__/
+docs/
+analyzed_fsl/
+analyzed_fsl.bedpostX/
