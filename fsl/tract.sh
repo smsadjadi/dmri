@@ -6,7 +6,6 @@
 : "${DO_TRACT:=1}"                # 1 = run tractography, 0 = skip completely
 : "${MATRIX_MODE:=1}"             # 1 = ROI×ROI, 2 = ROI×voxel, 3 = voxel×ROI, 4 = voxel×voxel
 : "${NSAMPLES:=5000}"             # fewer samples → much smaller .dot files
-: "${CPU_PERCENTAGE:=50}"         # cpu usage percentage (from 1 up to 100)
 
 # -------- DIRECTORIES --------
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -16,12 +15,12 @@ subjects=("subj_01" "subj_02" "subj_03" "subj_04" "subj_05" "subj_06" "subj_07" 
 pyenv="$HOME/pyenv/nienv/bin/python"
 
 # -------- SINGLE-INSTANCE LOCK --------
-lockfile="$dataset/.tract.lock"
-exec 9>"$lockfile"
-if ! flock -n 9; then
-  echo "Another run is active (lock: $lockfile). Kill that first!"
-  exit 0
-fi
+# lockfile="$dataset/.tract.lock"
+# exec 9>"$lockfile"
+# if ! flock -n 9; then
+#   echo "Another run is active (lock: $lockfile). Kill that first!"
+#   exit 0
+# fi
 
 # -------- LAUNCH (background + CPU-limit) --------
 if [[ "$LIMITED" != "1" ]]; then
@@ -31,7 +30,7 @@ if [[ "$LIMITED" != "1" ]]; then
     echo "New FSL run started @ $(date '+%Y-%m-%d %H:%M:%S')"
     echo "=============================================="
     echo
-    echo "launching under $CPU_PERCENTAGE% cpulimit..."
+    echo "launching under 50% cpulimit..."
     echo "-----------------------------------------"
     echo "Configuration:"
     echo "- SKIP_SUBJ_ON_EDDY_FAIL = $SKIP_SUBJ_ON_EDDY_FAIL"
@@ -41,7 +40,10 @@ if [[ "$LIMITED" != "1" ]]; then
     echo "-----------------------------------------"
     } >> "$dataset/fsl.log" 2>&1
     CORES=$(nproc)
-    CPU_LIMIT=$((CORES * $CPU_PERCENTAGE)
+    CPU_LIMIT=$((CORES * 50))
+    # (Option 1)
+    # LIMITED=1 exec cpulimit -l $CPU_LIMIT -- "$0" "$@" >> $dataset/fsl.log 2>&1
+    # (Option 2)
     export LIMITED=1
     if ! command -v cpulimit >/dev/null 2>&1; then
         echo "WARNING: 'cpulimit' not found; running without CPU throttle." >> "$dataset/fsl.log"
@@ -352,7 +354,7 @@ if [[ "$DO_TRACT" -eq 1 ]]; then
     echo "Running probtrackx2 (matrix mode $MATRIX_MODE)…"
     mkdir -p "$outdir/probtrackx"
     case "$MATRIX_MODE" in
-        1) prob_opts="--network --seed=$roi_list --targetmasks=$roi_list" ;; # ROI-to-ROI matrix
+        1) prob_opts="--network --seed=$roi_list --targetmasks=$roi_list" ;;  # ROI-to-ROI matrix
         2) prob_opts="--omatrix2 --seed=$roi_list" ;; # ROI seed to voxel targets
         3) prob_opts="--os2t --omatrix1 --seed=$seed_mask --targetmasks=$roi_list" ;; # Voxel seeds to ROI targets
         4) prob_opts="--omatrix3 --seed=$seed_mask" ;; # Full voxel-to-voxel matrix
@@ -369,12 +371,12 @@ if [[ "$DO_TRACT" -eq 1 ]]; then
     echo "✔️ Probabilistic Tractography & Connectivity"
   fi
 else
-  echo "⚠️ DO_TRACT=0 → Skipping edpostx/probtrackx"
+echo "⚠️ DO_TRACT=0 → Skipping edpostx/probtrackx"
 fi
 
 # -------- Dot to CSV --------
 echo "-------------------------------------"
-if [[ ! -f "$outdir/connectivity_matrix.csv"]]; then
+if [[ ! -f "$outdir/connectivity_matrix.csv" ]]; then
     echo "Converting Dot matrix to CSV..."
     if [[ -f "$out_mat" && "$out_mat" == *.dot ]]; then
         $pyenv "$parent_dir/dipy/tractography/dot_to_matrix.py" \
