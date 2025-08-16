@@ -352,7 +352,7 @@ if [[ "$DO_TRACT" -eq 1 ]]; then
     echo "Running probtrackx2 (matrix mode $MATRIX_MODE)…"
     mkdir -p "$outdir/probtrackx"
     case "$MATRIX_MODE" in
-        1) prob_opts="--network --seed=$roi_list --targetmasks=$roi_list" ;;  # ROI-to-ROI matrix
+        1) prob_opts="--network --seed=$roi_list --targetmasks=$roi_list" ;; # ROI-to-ROI matrix
         2) prob_opts="--omatrix2 --seed=$roi_list" ;; # ROI seed to voxel targets
         3) prob_opts="--os2t --omatrix1 --seed=$seed_mask --targetmasks=$roi_list" ;; # Voxel seeds to ROI targets
         4) prob_opts="--omatrix3 --seed=$seed_mask" ;; # Full voxel-to-voxel matrix
