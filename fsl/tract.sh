@@ -11,38 +11,48 @@
 # -------- DIRECTORIES --------
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 parent_dir="$(dirname "$script_dir")"
-dataset="$parent_dir/data"
-subjects=("subj_10") # "subj_01" "subj_02" "subj_03" "subj_04" "subj_05" "subj_06" "subj_07" "subj_08" "subj_09" 
+dataset="/home/ubuntu/Github/codex/datasets/dti" #"$parent_dir/data"
+subjects=("subj_01" "subj_02" "subj_03" "subj_04" "subj_05" "subj_06" "subj_07" "subj_08" "subj_09") # "subj_10"
 pyenv="$HOME/pyenv/nienv/bin/python"
 
-# -------- CLEAN-UP PIDs --------
-for pid in $(pgrep -f "$(basename "$0")"); do
-    [[ "$pid" != "$$" ]] && {
-        echo "Stopping previous instance → PID $pid"
-        kill -9 "$pid" 2>/dev/null
-    }
-done
+# -------- SINGLE-INSTANCE LOCK --------
+lockfile="$dataset/.tract.lock"
+exec 9>"$lockfile"
+if ! flock -n 9; then
+  echo "Another run is active (lock: $lockfile). Kill that first!"
+  exit 0
+fi
 
-# -------- EXECUSION --------
+# -------- LAUNCH (background + CPU-limit) --------
 if [[ "$LIMITED" != "1" ]]; then
     {
-        echo
-        echo "========================================="
-        echo "New FSL run started @ $(date '+%Y-%m-%d %H:%M:%S')"
-        echo "========================================="
-        echo "launching under $CPU_PERCENTAGE% cpulimit..."
-        echo "-----------------------------------------"
-        echo "Configuration:"
-        echo "- SKIP_SUBJ_ON_EDDY_FAIL = $SKIP_SUBJ_ON_EDDY_FAIL"
-        echo "- DO_TRACT               = $DO_TRACT"
-        echo "- MATRIX_MODE            = $MATRIX_MODE"
-        echo "- NSAMPLES               = $NSAMPLES"
-        echo "-----------------------------------------"
-    } >> $dataset/fsl.log 2>&1
+    echo
+    echo "=============================================="
+    echo "New FSL run started @ $(date '+%Y-%m-%d %H:%M:%S')"
+    echo "=============================================="
+    echo
+    echo "launching under $CPU_PERCENTAGE% cpulimit..."
+    echo "-----------------------------------------"
+    echo "Configuration:"
+    echo "- SKIP_SUBJ_ON_EDDY_FAIL = $SKIP_SUBJ_ON_EDDY_FAIL"
+    echo "- DO_TRACT               = $DO_TRACT"
+    echo "- MATRIX_MODE            = $MATRIX_MODE"
+    echo "- NSAMPLES               = $NSAMPLES"
+    echo "-----------------------------------------"
+    } >> "$dataset/fsl.log" 2>&1
     CORES=$(nproc)
-    CPU_LIMIT=$((CORES * $CPU_PERCENTAGE))
-    LIMITED=1 exec cpulimit -l $CPU_LIMIT -- "$0" "$@" >> $dataset/fsl.log 2>&1
-    # LIMITED=1 exec "$0" "$@" >> $dataset/fsl.log 2>&1
+    CPU_LIMIT=$((CORES * $CPU_PERCENTAGE)
+    export LIMITED=1
+    if ! command -v cpulimit >/dev/null 2>&1; then
+        echo "WARNING: 'cpulimit' not found; running without CPU throttle." >> "$dataset/fsl.log"
+        nohup "$0" "$@" >> "$dataset/fsl.log" 2>&1 &
+    else
+        nohup cpulimit -l "$CPU_LIMIT" -- "$0" "$@" >> "$dataset/fsl.log" 2>&1 &
+    fi
+    BG_PID=$!
+    disown "$BG_PID"
+    echo "Background PID: $BG_PID  (log → $dataset/fsl.log)" | tee -a "$dataset/fsl.log"
+    exit 0
 fi
 
 # -------- DATASET --------
@@ -364,11 +374,15 @@ fi
 
 # -------- Dot to CSV --------
 echo "-------------------------------------"
-if [[ ! -f "$outdir/connectivity_matrix.csv" && -f "$out_mat" && "$out_mat" == *.dot ]]; then
+if [[ ! -f "$outdir/connectivity_matrix.csv"]]; then
     echo "Converting Dot matrix to CSV..."
-    $pyenv "$parent_dir/dipy/tractography/dot_to_matrix.py" \
-            "$out_mat" "$outdir/connectivity_matrix.csv"
-    echo "✔️ Connectivity matrix saved: $outdir/connectivity_matrix.csv"
+    if [[ -f "$out_mat" && "$out_mat" == *.dot ]]; then
+        $pyenv "$parent_dir/dipy/tractography/dot_to_matrix.py" \
+                "$out_mat" "$outdir/connectivity_matrix.csv"
+        echo "✔️ Connectivity matrix saved: $outdir/connectivity_matrix.csv"
+    else
+        echo "$out_mat not found! Skipping Dot-to-CSV..."
+    fi
 else
 echo "✔️ Dot to CSV"
 fi
@@ -382,11 +396,25 @@ else
 echo "✔️ Quality Control"
 fi
 
+# -------- Safe to Delete --------
+echo "-------------------------------------"
+echo "Cleaning redundant intermediate files..."
+outdir="$dataset/$subject/analyzed_fsl"
+# direct redundant files
+rm -f "$outdir/data.nii.gz"
+rm -f "$outdir/dwi_unwarped.nii.gz"
+rm -f "$outdir/dwi.nii.gz"
+# bedpostX redundant merged samples (if no plan to re-run)
+# rm -f "$outdir.bedpostX"/merged_f*samples.nii.gz
+# rm -f "$outdir.bedpostX"/merged_ph*samples.nii.gz
+# rm -f "$outdir.bedpostX"/merged_th*samples.nii.gz
+
 # -------- Done --------
-echo "========================================="
+echo
+echo "=============================================="
 echo "✅ FSL pipeline complete @ $(date '+%Y-%m-%d %H:%M:%S')"
-echo "========================================="
+echo "=============================================="
 done
 
 # -------- Kill PID --------
-trap '"$script_dir/kill.sh"' EXIT
+trap "$script_dir/kill.sh" EXIT
