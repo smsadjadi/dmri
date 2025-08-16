@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 sig="-TERM"
 [[ $1 == "--force" ]] && sig="-KILL"
