@@ -42,19 +42,19 @@ if [[ "$LIMITED" != "1" ]]; then
     CORES=$(nproc)
     CPU_LIMIT=$((CORES * 50))
     # (Option 1)
-    # LIMITED=1 exec cpulimit -l $CPU_LIMIT -- "$0" "$@" >> $dataset/fsl.log 2>&1
+    LIMITED=1 exec cpulimit -l $CPU_LIMIT -- "$0" "$@" >> $dataset/fsl.log 2>&1
     # (Option 2)
-    export LIMITED=1
-    if ! command -v cpulimit >/dev/null 2>&1; then
-        echo "WARNING: 'cpulimit' not found; running without CPU throttle." >> "$dataset/fsl.log"
-        nohup "$0" "$@" >> "$dataset/fsl.log" 2>&1 &
-    else
-        nohup cpulimit -l "$CPU_LIMIT" -- "$0" "$@" >> "$dataset/fsl.log" 2>&1 &
-    fi
-    BG_PID=$!
-    disown "$BG_PID"
-    echo "Background PID: $BG_PID  (log → $dataset/fsl.log)" | tee -a "$dataset/fsl.log"
-    exit 0
+    # export LIMITED=1
+    # if ! command -v cpulimit >/dev/null 2>&1; then
+    #     echo "WARNING: 'cpulimit' not found; running without CPU throttle." >> "$dataset/fsl.log"
+    #     nohup "$0" "$@" >> "$dataset/fsl.log" 2>&1 &
+    # else
+    #     nohup cpulimit -l "$CPU_LIMIT" -- "$0" "$@" >> "$dataset/fsl.log" 2>&1 &
+    # fi
+    # BG_PID=$!
+    # disown "$BG_PID"
+    # echo "Background PID: $BG_PID  (log → $dataset/fsl.log)" | tee -a "$dataset/fsl.log"
+    # exit 0
 fi
 
 # -------- DATASET --------
