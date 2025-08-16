@@ -1,7 +1,8 @@
 
-=========================================
+==============================================
 New FSL run started @ 2025-08-13 15:11:01
-=========================================
+==============================================
+
 launching under 50% cpulimit...
 -----------------------------------------
 Configuration:
@@ -32,165 +33,6 @@ Creating B0...
 Resampling fieldmap to match DWI dimensions...
 -------------------------------------
 Applying EPI distortion correction with fugue...
--------------------------------------
-Running eddy correction...
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0000
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0001
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0002
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0003
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0004
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0005
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0006
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0007
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0008
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0009
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0010
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0011
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0012
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0013
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0014
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0015
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0016
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0017
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0018
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0019
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0020
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0021
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0022
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0023
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0024
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0025
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0026
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0027
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0028
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0029
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0030
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0031
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0032
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0033
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0034
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0035
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0036
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0037
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0038
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0039
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0040
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0041
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0042
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0043
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0044
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0045
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0046
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0047
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0048
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0049
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0050
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0051
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0052
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0053
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0054
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0055
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0056
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0057
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0058
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0059
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0060
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0061
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0062
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0063
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0064
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0065
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0066
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0067
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0068
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0069
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0070
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0071
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0072
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0073
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0074
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0075
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0076
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0077
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0078
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0079
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0080
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0081
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0082
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0083
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0084
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0085
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0086
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0087
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0088
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0089
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0090
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0091
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0092
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0093
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0094
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0095
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0096
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0097
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0098
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0099
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0100
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0101
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0102
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0103
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0104
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0105
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0106
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0107
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0108
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0109
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0110
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0111
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0112
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0113
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0114
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0115
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0116
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0117
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0118
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0119
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0120
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0121
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0122
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0123
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0124
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0125
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0126
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0127
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0128
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0129
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0130
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0131
-processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0132
-
-=========================================
-New FSL run started @ 2025-08-13 15:23:47
-=========================================
-launching under 50% cpulimit...
------------------------------------------
-Configuration:
-- SKIP_SUBJ_ON_EDDY_FAIL = 0
-- DO_TRACT               = 1
-- MATRIX_MODE            = 1
-- NSAMPLES               = 5000
------------------------------------------
-Stopping previous instance → PID 73263
-👨🏻‍💻 <<< subj_10
--------------------------------------
-✔️ Copy DWI
--------------------------------------
-✔️ Fieldmap Preparation
--------------------------------------
-Creating B0...
--------------------------------------
-Resampling fieldmap to match DWI dimensions...
--------------------------------------
-✔️ EPI Distortion Correction
 -------------------------------------
 Running eddy correction...
 processing /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/dwi_eddy_tmp0000
@@ -429,3 +271,335 @@ Queuing parallel processing stage
 13 slices processed out of 64
 14 slices processed out of 64
 15 slices processed out of 64
+16 slices processed out of 64
+17 slices processed out of 64
+18 slices processed out of 64
+19 slices processed out of 64
+20 slices processed out of 64
+21 slices processed out of 64
+22 slices processed out of 64
+23 slices processed out of 64
+24 slices processed out of 64
+25 slices processed out of 64
+26 slices processed out of 64
+27 slices processed out of 64
+28 slices processed out of 64
+29 slices processed out of 64
+30 slices processed out of 64
+31 slices processed out of 64
+32 slices processed out of 64
+33 slices processed out of 64
+34 slices processed out of 64
+35 slices processed out of 64
+36 slices processed out of 64
+37 slices processed out of 64
+38 slices processed out of 64
+39 slices processed out of 64
+40 slices processed out of 64
+41 slices processed out of 64
+42 slices processed out of 64
+43 slices processed out of 64
+44 slices processed out of 64
+45 slices processed out of 64
+46 slices processed out of 64
+47 slices processed out of 64
+48 slices processed out of 64
+49 slices processed out of 64
+50 slices processed out of 64
+51 slices processed out of 64
+52 slices processed out of 64
+53 slices processed out of 64
+54 slices processed out of 64
+55 slices processed out of 64
+56 slices processed out of 64
+57 slices processed out of 64
+58 slices processed out of 64
+Queuing post processing stage
+59 slices processed out of 64
+60 slices processed out of 64
+61 slices processed out of 64
+62 slices processed out of 64
+63 slices processed out of 64
+64 slices processed out of 64
+All slices processed
+Running probtrackx2 (matrix mode 1)…
+Log directory is: /home/ubuntu/Github/codex/dmri/data/subj_10/analyzed_fsl/probtrackx
+Running in network mode
+load seeds
+Load bedpostx samples
+1_1
+1_2
+1_3
+2_1
+2_2
+2_3
+3_1
+3_2
+3_3
+
+nfibres  : 3
+nsamples : 50
+
+Done loading samples.
+Volume seeds
+volume 0
+volume 1
+volume 2
+volume 3
+volume 4
+volume 5
+volume 6
+volume 7
+volume 8
+volume 9
+volume 10
+volume 11
+volume 12
+volume 13
+volume 14
+volume 15
+volume 16
+volume 17
+volume 18
+volume 19
+volume 20
+volume 21
+volume 22
+volume 23
+volume 24
+volume 25
+volume 26
+volume 27
+volume 28
+volume 29
+volume 30
+volume 31
+volume 32
+volume 33
+volume 34
+volume 35
+volume 36
+volume 37
+volume 38
+volume 39
+volume 40
+volume 41
+volume 42
+volume 43
+volume 44
+volume 45
+volume 46
+volume 47
+volume 48
+volume 49
+volume 50
+volume 51
+volume 52
+volume 53
+volume 54
+volume 55
+volume 56
+volume 57
+volume 58
+volume 59
+volume 60
+volume 61
+volume 62
+volume 63
+volume 64
+volume 65
+volume 66
+volume 67
+volume 68
+volume 69
+volume 70
+volume 71
+volume 72
+volume 73
+volume 74
+volume 75
+volume 76
+volume 77
+volume 78
+volume 79
+volume 80
+volume 81
+volume 82
+volume 83
+volume 84
+volume 85
+volume 86
+volume 87
+volume 88
+volume 89
+volume 90
+volume 91
+volume 92
+volume 93
+volume 94
+volume 95
+volume 96
+volume 97
+volume 98
+volume 99
+volume 100
+volume 101
+volume 102
+volume 103
+volume 104
+volume 105
+volume 106
+volume 107
+volume 108
+volume 109
+volume 110
+volume 111
+volume 112
+volume 113
+volume 114
+volume 115
+volume 116
+volume 117
+volume 118
+volume 119
+volume 120
+volume 121
+volume 122
+volume 123
+volume 124
+volume 125
+volume 126
+volume 127
+volume 128
+volume 129
+volume 130
+volume 131
+volume 132
+volume 133
+volume 134
+volume 135
+volume 136
+volume 137
+volume 138
+volume 139
+volume 140
+volume 141
+volume 142
+volume 143
+volume 144
+volume 145
+volume 146
+volume 147
+volume 148
+volume 149
+volume 150
+volume 151
+volume 152
+volume 153
+volume 154
+volume 155
+volume 156
+volume 157
+volume 158
+volume 159
+volume 160
+volume 161
+volume 162
+volume 163
+volume 164
+volume 165
+volume 166
+volume 167
+volume 168
+volume 169
+volume 170
+volume 171
+volume 172
+volume 173
+volume 174
+volume 175
+volume 176
+volume 177
+volume 178
+volume 179
+volume 180
+volume 181
+volume 182
+volume 183
+volume 184
+volume 185
+volume 186
+volume 187
+volume 188
+volume 189
+volume 190
+volume 191
+volume 192
+volume 193
+volume 194
+volume 195
+volume 196
+volume 197
+volume 198
+volume 199
+volume 200
+volume 201
+volume 202
+volume 203
+volume 204
+volume 205
+volume 206
+volume 207
+volume 208
+volume 209
+volume 210
+volume 211
+volume 212
+volume 213
+volume 214
+volume 215
+volume 216
+volume 217
+volume 218
+volume 219
+volume 220
+volume 221
+volume 222
+volume 223
+volume 224
+volume 225
+volume 226
+volume 227
+volume 228
+volume 229
+volume 230
+volume 231
+volume 232
+volume 233
+volume 234
+volume 235
+volume 236
+volume 237
+volume 238
+volume 239
+volume 240
+volume 241
+volume 242
+volume 243
+volume 244
+volume 245
+
+time spent tracking: 57240 seconds
+
+save results
+finished
+-------------------------------------
+Converting Dot matrix to CSV...
+-------------------------------------
+Generating QC slices for FA...
+-------------------------------------
+Cleaning redundant intermediate files...
+
+==============================================
+✅ FSL pipeline complete @ 2025-08-14 09:14:52
+==============================================
