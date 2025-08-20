@@ -400,6 +400,7 @@ echo "✔️ Quality Control"
 fi
 
 # -------- Extract and Compress --------
+echo "-------------------------------------"
 pack_outputs() {
   local d="${1:-.}"
   shopt -s nullglob
@@ -420,7 +421,10 @@ pack_outputs() {
   done
   (cd "$d" && tar -I 'zstd -T0 -19' -cvf analyzed_fsl.tar.zst "${files[@]}")
 }
-pack_outputs $datadir
+if [[ ! -f "$datadir/analyzed_fsl.tar.zst" ]]; then
+    echo "Generating compressed output..."
+    pack_outputs $datadir
+fi
 
 # -------- Safe to Delete --------
 echo "-------------------------------------"
