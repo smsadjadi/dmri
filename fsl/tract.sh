@@ -366,6 +366,7 @@ if [[ "$DO_TRACT" -eq 1 ]]; then
         --loopcheck --forcedir \
         --nsamples="$NSAMPLES" \
         $prob_opts \
+        --opd \
         --dir="$outdir/probtrackx"
   else
     echo "✔️ Probabilistic Tractography & Connectivity"
