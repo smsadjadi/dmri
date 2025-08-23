@@ -399,32 +399,32 @@ else
 echo "✔️ Quality Control"
 fi
 
-# -------- Extract and Compress --------
-echo "-------------------------------------"
-pack_outputs() {
-  local d="${1:-.}"
-  shopt -s nullglob
-  local files=()
-  local patterns=(
-    "analyzed_fsl/probtrackx/fdt_*"      # FINAL connectivity paths/matrices (e.g., fdt_paths.nii.gz, fdt_network_matrix, fdt_matrix*.dot/csv); primary deliverables for connectome analyses
-    "analyzed_fsl/probtrackx/waytotal"   # Total successful samples launched from seeds; keep to report/redo normalization of matrices and for QC/reproducibility
-    "analyzed_fsl/roi_list.txt"          # Ordered list of ROI IDs/names actually used (post-pruning); defines exact row/column order for fdt_* matrices—critical metadata
-    "analyzed_fsl/rois/roi_*.nii.gz"     # Binary masks for the ROIs as actually used in DWI space (pruned to within-FOV); needed to reproduce matrices, visualize edges, or re-run probtrackx
-    "analyzed_fsl/atlas_in_dwi.nii.gz"   # Whole atlas resampled/registered into DWI space; lets you rebuild or audit ROI masks and check registration later
-    "analyzed_fsl/dwi_eddy.nii.gz"       # Motion/eddy-corrected diffusion data; minimal dataset to re-fit models (DTI/bedpostx) or regenerate tractography
-    "analyzed_fsl/brain_mask.nii.gz"     # Brain mask in DWI space; used by model fitting and tractography to limit computation to brain voxels; must match dwi_eddy
-    "analyzed_fsl/dti_*.nii.gz"          # Scalar maps (FA, MD, AD=L1, RD≈(L2+L3)/2, etc.); not needed for probtrackx itself, but keep if you run voxelwise stats, QA, or report microstructure
-  )
-  [[ -d "$d/analyzed_fsl.bedpostX" ]] && files+=("analyzed_fsl.bedpostX") # BedpostX model directory
-  for p in "${patterns[@]}"; do
-    for f in "$d"/$p; do files+=("${f#$d/}"); done
-  done
-  (cd "$d" && tar -I 'zstd -T0 -19' -cf analyzed_fsl.tar.zst "${files[@]}" && rm -rf "${files[@]}")
-}
-if [[ ! -f "$datadir/analyzed_fsl.tar.zst" ]]; then
-    echo "Generating compressed output..."
-    pack_outputs $datadir
-fi
+# # -------- Extract and Compress --------
+# echo "-------------------------------------"
+# pack_outputs() {
+#   local d="${1:-.}"
+#   shopt -s nullglob
+#   local files=()
+#   local patterns=(
+#     "analyzed_fsl/probtrackx/fdt_*"      # FINAL connectivity paths/matrices (e.g., fdt_paths.nii.gz, fdt_network_matrix, fdt_matrix*.dot/csv); primary deliverables for connectome analyses
+#     "analyzed_fsl/probtrackx/waytotal"   # Total successful samples launched from seeds; keep to report/redo normalization of matrices and for QC/reproducibility
+#     "analyzed_fsl/roi_list.txt"          # Ordered list of ROI IDs/names actually used (post-pruning); defines exact row/column order for fdt_* matrices—critical metadata
+#     "analyzed_fsl/rois/roi_*.nii.gz"     # Binary masks for the ROIs as actually used in DWI space (pruned to within-FOV); needed to reproduce matrices, visualize edges, or re-run probtrackx
+#     "analyzed_fsl/atlas_in_dwi.nii.gz"   # Whole atlas resampled/registered into DWI space; lets you rebuild or audit ROI masks and check registration later
+#     "analyzed_fsl/dwi_eddy.nii.gz"       # Motion/eddy-corrected diffusion data; minimal dataset to re-fit models (DTI/bedpostx) or regenerate tractography
+#     "analyzed_fsl/brain_mask.nii.gz"     # Brain mask in DWI space; used by model fitting and tractography to limit computation to brain voxels; must match dwi_eddy
+#     "analyzed_fsl/dti_*.nii.gz"          # Scalar maps (FA, MD, AD=L1, RD≈(L2+L3)/2, etc.); not needed for probtrackx itself, but keep if you run voxelwise stats, QA, or report microstructure
+#   )
+#   [[ -d "$d/analyzed_fsl.bedpostX" ]] && files+=("analyzed_fsl.bedpostX") # BedpostX model directory
+#   for p in "${patterns[@]}"; do
+#     for f in "$d"/$p; do files+=("${f#$d/}"); done
+#   done
+#   (cd "$d" && tar -I 'zstd -T0 -19' -cf analyzed_fsl.tar.zst "${files[@]}" && rm -rf "${files[@]}")
+# }
+# if [[ ! -f "$datadir/analyzed_fsl.tar.zst" ]]; then
+#     echo "Generating compressed output..."
+#     pack_outputs $datadir
+# fi
 
 # -------- Safe to Delete --------
 echo "-------------------------------------"
