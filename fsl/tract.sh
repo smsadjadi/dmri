@@ -11,7 +11,7 @@
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 parent_dir="$(dirname "$script_dir")"
 dataset="/home/ubuntu/Github/codex/datasets/dti" #"$parent_dir/data"
-subjects=("subj_04" "subj_05" "subj_06" "subj_07" "subj_08" "subj_09") # ""subj_01" "subj_02" "subj_03" subj_10"
+subjects=("subj_01" "subj_02" "subj_03" "subj_04" "subj_05" "subj_06" "subj_07" "subj_08" "subj_09" " subj_10")
 pyenv="$HOME/pyenv/nienv/bin/python"
 
 # -------- SINGLE-INSTANCE LOCK --------
@@ -80,6 +80,7 @@ mag="$datadir/gre_field_mapping_2mm_e1.nii.gz"
 phase="$datadir/gre_field_mapping_2mm_e2.nii.gz"
 t1="$datadir/t1_mprage_tra.nii.gz"
 atlas="$dataset/atlases/BN_Atlas_246_2mm.nii.gz"
+rois_dir="$outdir/rois"
 roi_list="$outdir/roi_list.txt"
 seed_mask="$outdir/seed_mask.nii.gz"
 
@@ -301,7 +302,7 @@ fi
 
 # -------- Binary ROI Masks & List --------
 echo "-------------------------------------"
-if [[ ! -f "$roi_list" ]]; then
+if [[ ! -f "$roi_list" || ! -d "$rois_dir" ]]; then
     echo "Creating binary ROI masks from atlas..."
     mkdir -p "$outdir/rois"
     rm -f "$roi_list"
