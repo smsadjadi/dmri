@@ -419,7 +419,7 @@ pack_outputs() {
   for p in "${patterns[@]}"; do
     for f in "$d"/$p; do files+=("${f#$d/}"); done
   done
-  (cd "$d" && tar -I 'zstd -T0 -19' -cvf analyzed_fsl.tar.zst "${files[@]}")
+  (cd "$d" && tar -I 'zstd -T0 -19' -cf analyzed_fsl.tar.zst "${files[@]}")
 }
 if [[ ! -f "$datadir/analyzed_fsl.tar.zst" ]]; then
     echo "Generating compressed output..."
