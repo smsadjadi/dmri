@@ -419,7 +419,7 @@ pack_outputs() {
   for p in "${patterns[@]}"; do
     for f in "$d"/$p; do files+=("${f#$d/}"); done
   done
-  (cd "$d" && tar -I 'zstd -T0 -19' -cf analyzed_fsl.tar.zst "${files[@]}")
+  (cd "$d" && tar -I 'zstd -T0 -19' -cf analyzed_fsl.tar.zst "${files[@]}" && rm -rf "${files[@]}")
 }
 if [[ ! -f "$datadir/analyzed_fsl.tar.zst" ]]; then
     echo "Generating compressed output..."
@@ -434,14 +434,6 @@ outdir="$dataset/$subject/analyzed_fsl"
 rm -f "$outdir/data.nii.gz"
 rm -f "$outdir/dwi_unwarped.nii.gz"
 rm -f "$outdir/dwi.nii.gz"
-# rm -f "$outdir/probtrackx/"
-# rm -f "$outdir/roi_list.txt"
-# rm -f "$outdir/rois/"
-# rm -f "$outdir/atlas_in_dwi.nii.gz"
-# rm -f "$outdir/dwi_eddy.nii.gz"
-# rm -f "$outdir/brain_mask.nii.gz"
-# rm -f "$outdir/dti_*.nii.gz"
-# rm -f "$outdir.bedpostX/"
 
 # -------- Done --------
 echo
