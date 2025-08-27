@@ -338,8 +338,9 @@ fi
 echo "-------------------------------------"
 if [[ "$MATRIX_MODE" -eq 1 ]]; then out_mat="$outdir/probtrackx/fdt_network_matrix"
 else out_mat="$outdir/probtrackx/fdt_matrix${MATRIX_MODE}.dot"; fi
+out_path="$outdir/probtrackx/fdt_paths.nii.gz"
 if [[ "$DO_TRACT" -eq 1 ]]; then
-  if [[ ! -f "$out_mat" ]]; then
+  if [[ ! -f "$out_mat" || ! -f "$out_path" ]]; then
     echo "Running bedpostx for diffusion modelling..."
     samples_ok="$outdir.bedpostX/merged_th1samples.nii.gz"
     if [[ ! -f "$samples_ok" ]]; then
