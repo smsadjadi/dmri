@@ -11,7 +11,7 @@
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 parent_dir="$(dirname "$script_dir")"
 dataset="/home/ubuntu/Github/codex/datasets/dti" #"$parent_dir/data"
-subjects=("subj_01" "subj_02" "subj_03" "subj_04" "subj_05" "subj_06" "subj_07" "subj_08" "subj_09" " subj_10")
+subjects=("subj_01" "subj_02" "subj_03" "subj_04" "subj_05" "subj_06" "subj_07" "subj_08" "subj_09" "subj_10")
 pyenv="$HOME/pyenv/nienv/bin/python"
 
 # -------- SINGLE-INSTANCE LOCK --------
@@ -31,13 +31,11 @@ if [[ "$LIMITED" != "1" ]]; then
     echo "=============================================="
     echo
     echo "launching under 50% cpulimit..."
-    echo "-------------------------------------"
     echo "Configuration:"
     echo "- SKIP_SUBJ_ON_EDDY_FAIL = $SKIP_SUBJ_ON_EDDY_FAIL"
     echo "- DO_TRACT               = $DO_TRACT"
     echo "- MATRIX_MODE            = $MATRIX_MODE"
     echo "- NSAMPLES               = $NSAMPLES"
-    echo "-------------------------------------"
     } >> "$dataset/fsl.log" 2>&1
     CORES=$(nproc)
     CPU_LIMIT=$((CORES * 50))
@@ -57,12 +55,18 @@ if [[ "$LIMITED" != "1" ]]; then
     # exit 0
 fi
 
-# -------- DATASET --------
+# -------- MAIN LOOP --------
 if [ ${#subjects[@]} -eq 0 ]; then
     mapfile -t subjects < <(ls -1 "$dataset")
 fi
 for subject in "${subjects[@]}"; do
-echo "👨🏻‍💻 <<< ${subject}"
+
+# -------- START --------
+echo
+echo 
+echo "💻 <<<<< 📊 ${subject} ($(date '+%Y-%m-%d %H:%M:%S'))"
+echo 
+echo 
 
 # -------- DATA LOADER --------
 datadir="$dataset/$subject"
@@ -436,13 +440,21 @@ outdir="$dataset/$subject/analyzed_fsl"
 rm -f "$outdir/data.nii.gz"
 rm -f "$outdir/dwi_unwarped.nii.gz"
 rm -f "$outdir/dwi.nii.gz"
+echo "-------------------------------------"
 
 # -------- Done --------
 echo
-echo "=============================================="
-echo "✅ FSL pipeline complete @ $(date '+%Y-%m-%d %H:%M:%S')"
-echo "=============================================="
+echo
+echo "✅ ${subject} >>>>> 🗃️ ($(date '+%Y-%m-%d %H:%M:%S'))"
+echo
+echo
 done
+
+# -------- FINISHED --------
+echo
+echo "=============================================="
+echo "FSL pipeline complete @ $(date '+%Y-%m-%d %H:%M:%S')"
+echo "=============================================="
 
 # -------- Kill PID --------
 trap "$script_dir/kill.sh" EXIT
