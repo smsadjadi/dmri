@@ -31,13 +31,13 @@ if [[ "$LIMITED" != "1" ]]; then
     echo "=============================================="
     echo
     echo "launching under 50% cpulimit..."
-    echo "-----------------------------------------"
+    echo "-------------------------------------"
     echo "Configuration:"
     echo "- SKIP_SUBJ_ON_EDDY_FAIL = $SKIP_SUBJ_ON_EDDY_FAIL"
     echo "- DO_TRACT               = $DO_TRACT"
     echo "- MATRIX_MODE            = $MATRIX_MODE"
     echo "- NSAMPLES               = $NSAMPLES"
-    echo "-----------------------------------------"
+    echo "-------------------------------------"
     } >> "$dataset/fsl.log" 2>&1
     CORES=$(nproc)
     CPU_LIMIT=$((CORES * 50))
